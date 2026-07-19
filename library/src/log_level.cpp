@@ -1,7 +1,25 @@
 #include <journal/log_level.hpp>
 
-#include <string>
-#include <algorithm>
+#include <cctype>
+#include <cstddef>
+
+static bool equals_ignore_case(const std::string_view lhs, const std::string_view rhs) noexcept
+{
+    if (lhs.size() != rhs.size())
+    {
+        return false;
+    }
+
+    for (std::size_t i = 0; i < lhs.size(); ++i)
+    {
+        if (std::tolower(static_cast<unsigned char>(lhs[i])) != std::tolower(static_cast<unsigned char>(rhs[i])))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
 
 namespace journal
 {
@@ -20,30 +38,19 @@ namespace journal
         }
     }
 
-    std::string to_lower_string(const std::string_view sv)
-    {
-        std::string res{sv};
-
-        std::transform(res.begin(), res.end(), res.begin(), ::tolower);
-
-        return res;
-    }
-
     std::optional<LogLevel> to_log_level(const std::string_view level) noexcept
     {
-        auto loweredLevel = to_lower_string(level);
-
-        if (loweredLevel == "info")
+        if (equals_ignore_case(level, "info"))
         {
             return LogLevel::Info;
         }
 
-        if (loweredLevel == "warning")
+        if (equals_ignore_case(level, "warning"))
         {
             return LogLevel::Warning;
         }
 
-        if (loweredLevel == "error")
+        if (equals_ignore_case(level, "error"))
         {
             return LogLevel::Error;
         }
