@@ -1,4 +1,4 @@
-add_library(journal_objects OBJECT src/stub.cpp)
+add_library(journal_objects OBJECT src/log_level.cpp)
 
 target_compile_features(journal_objects PRIVATE cxx_std_17)
 set_target_properties(journal_objects PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
