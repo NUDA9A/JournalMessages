@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include <string_view>
 #include <optional>
 
 namespace journal
@@ -12,6 +12,6 @@ namespace journal
         Error
     };
 
-    std::string to_string(LogLevel level) noexcept;
-    std::optional<LogLevel> to_log_level(const std::string& level) noexcept;
+    std::string_view to_string(LogLevel level) noexcept;
+    std::optional<LogLevel> to_log_level(std::string_view level) noexcept;
 }

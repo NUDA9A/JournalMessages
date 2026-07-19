@@ -1,37 +1,49 @@
 #include <journal/log_level.hpp>
 
-#include <exception>
+#include <string>
+#include <algorithm>
 
 namespace journal
 {
-    std::string to_string(const LogLevel level) noexcept
+    std::string_view to_string(const LogLevel level) noexcept
     {
         switch (level)
         {
         case LogLevel::Info:
-            return "Info";
+            return "INFO";
         case LogLevel::Warning:
-            return "Warning";
+            return "WARNING";
         case LogLevel::Error:
-            return "Error";
+            return "ERROR";
         default:
-            return "UnknownLogLevel";
+            return "UNKNOWN_LOG_LEVEL";
         }
     }
 
-    std::optional<LogLevel> to_log_level(const std::string& level) noexcept
+    std::string to_lower_string(const std::string_view sv)
     {
-        if (level == "Info" || level == "INFO" || level == "info")
+        std::string res{sv};
+
+        std::transform(res.begin(), res.end(), res.begin(), ::tolower);
+
+        return res;
+    }
+
+    std::optional<LogLevel> to_log_level(const std::string_view level) noexcept
+    {
+        auto loweredLevel = to_lower_string(level);
+
+        if (loweredLevel == "info")
         {
             return LogLevel::Info;
         }
 
-        if (level == "Warning" || level == "WARNING" || level == "warning")
+        if (loweredLevel == "warning")
         {
             return LogLevel::Warning;
         }
 
-        if (level == "Error" || level == "ERROR" || level == "error")
+        if (loweredLevel == "error")
         {
             return LogLevel::Error;
         }
