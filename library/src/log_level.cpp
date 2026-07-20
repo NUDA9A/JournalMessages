@@ -57,4 +57,27 @@ namespace journal
 
         return std::nullopt;
     }
+
+    bool is_compatible(const LogLevel msgLevel, const LogLevel requiredLevel) noexcept
+    {
+        switch (requiredLevel)
+        {
+        case LogLevel::Info:
+            return true;
+        case LogLevel::Warning:
+            if (msgLevel == LogLevel::Info)
+            {
+                return false;
+            }
+            return true;
+        case LogLevel::Error:
+            if (msgLevel == LogLevel::Info || msgLevel == LogLevel::Warning)
+            {
+                return false;
+            }
+            return true;
+        default:
+            return false;
+        }
+    }
 }

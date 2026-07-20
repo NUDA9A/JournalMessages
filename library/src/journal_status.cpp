@@ -16,6 +16,8 @@ namespace journal
             return "FILE_OPEN_FAILED";
         case JournalStatus::FileWriteFailed:
             return "FILE_WRITE_FAILED";
+        case JournalStatus::TimeConversionFailed:
+            return "TIME_CONVERSION_FAILED";
         default:
             return "UNKNOWN_JOURNAL_STATUS";
         }

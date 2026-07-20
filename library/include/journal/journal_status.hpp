@@ -10,7 +10,8 @@ namespace journal
         FilteredOut,
         InvalidArgument,
         FileOpenFailed,
-        FileWriteFailed
+        FileWriteFailed,
+        TimeConversionFailed
     };
 
     std::string_view to_string(JournalStatus status) noexcept;
