@@ -2,6 +2,7 @@
 
 #include <journal/log_level.hpp>
 #include <journal/journal_status.hpp>
+#include <journal/log_record.hpp>
 
 #include <chrono>
 #include <ctime>
@@ -34,12 +35,9 @@ namespace journal
                 return;
             }
 
-            const auto logMsg = form_log_message(message, timePoint, logLevel);
-            if (logMsg.empty())
-            {
-                return;
-            }
-            journal_status_ = transport(logMsg);
+            const LogRecordView record{message, logLevel, timePoint};
+
+            journal_status_ = transport(record);
         }
 
         void write(const std::string_view message, const std::chrono::system_clock::time_point& timePoint)
@@ -62,15 +60,9 @@ namespace journal
         virtual bool is_ready() const = 0;
 
     protected:
-        explicit Journal(const LogLevel logLevel) : log_level_(logLevel), journal_status_(JournalStatus::Success) {}
-
-        virtual JournalStatus transport(std::string_view logMsg) = 0;
-        virtual JournalStatus not_ready_status() const noexcept = 0;
-
-    private:
-        std::string form_log_message(const std::string_view message, const std::chrono::system_clock::time_point& timePoint, const LogLevel logLevel)
+        std::string form_log_message(const LogRecordView& logRecord)
         {
-            const auto currentTime = std::chrono::system_clock::to_time_t(timePoint);
+            const auto currentTime = std::chrono::system_clock::to_time_t(logRecord.timestamp);
             const std::tm* currentDateTime = std::localtime(&currentTime);
 
             if (currentDateTime == nullptr)
@@ -82,11 +74,17 @@ namespace journal
             std::ostringstream oss;
 
             oss << std::put_time(currentDateTime, "[%Y-%m-%d %H:%M:%S]");
-            oss << " [" << to_string(logLevel) << "] " << message << "\n";
+            oss << " [" << to_string(logRecord.level) << "] " << logRecord.message << "\n";
 
             return oss.str();
         }
 
+        explicit Journal(const LogLevel logLevel) : log_level_(logLevel), journal_status_(JournalStatus::Success) {}
+
+        virtual JournalStatus transport(const LogRecordView& logRecord) = 0;
+        virtual JournalStatus not_ready_status() const noexcept = 0;
+
+    private:
         LogLevel log_level_;
 
     protected:

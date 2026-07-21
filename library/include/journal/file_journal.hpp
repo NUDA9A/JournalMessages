@@ -3,6 +3,7 @@
 #include <journal/journal_status.hpp>
 #include <journal/log_level.hpp>
 #include <journal/journal.hpp>
+#include <journal/log_record.hpp>
 
 #include <fstream>
 #include <string_view>
@@ -10,7 +11,7 @@
 
 namespace journal
 {
-    class FileJournal : public Journal
+    class FileJournal final : public Journal
     {
     public:
         FileJournal() = delete;
@@ -25,7 +26,7 @@ namespace journal
 
         bool is_ready() const override;
     private:
-        JournalStatus transport(std::string_view logMsg) override;
+        JournalStatus transport(const LogRecordView&) override;
         JournalStatus not_ready_status() const noexcept override;
 
         std::ofstream journal_{};

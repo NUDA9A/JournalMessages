@@ -24,8 +24,14 @@ namespace journal
         return journal_.is_open();
     }
 
-    JournalStatus FileJournal::transport(const std::string_view logMsg)
+    JournalStatus FileJournal::transport(const LogRecordView& logRecord)
     {
+        const auto logMsg = form_log_message(logRecord);
+        if (logMsg.empty())
+        {
+            return JournalStatus::TimeConversionFailed;
+        }
+
         journal_ << logMsg;
         journal_.flush();
 
