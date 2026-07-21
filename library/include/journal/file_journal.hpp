@@ -2,15 +2,15 @@
 
 #include <journal/journal_status.hpp>
 #include <journal/log_level.hpp>
+#include <journal/journal.hpp>
 
 #include <fstream>
 #include <string_view>
 #include <filesystem>
-#include <chrono>
 
 namespace journal
 {
-    class FileJournal
+    class FileJournal : public Journal
     {
     public:
         FileJournal() = delete;
@@ -19,18 +19,15 @@ namespace journal
         FileJournal(FileJournal&&) noexcept = delete;
         FileJournal& operator=(FileJournal&&) noexcept = delete;
 
-        ~FileJournal() = default;
+        ~FileJournal() override = default;
 
         FileJournal(const std::filesystem::path& filePath, LogLevel logLevel);
 
-        bool is_open() const;
-        JournalStatus status() const noexcept;
-        void write(std::string_view message, const std::chrono::system_clock::time_point& timePoint, LogLevel logLevel);
-        void write(std::string_view message, const std::chrono::system_clock::time_point& timePoint);
-        void setLogLevel(LogLevel logLevel) noexcept;
+        bool is_ready() const override;
     private:
+        JournalStatus transport(std::string_view logMsg) override;
+        JournalStatus not_ready_status() const noexcept override;
+
         std::ofstream journal_{};
-        LogLevel log_level_;
-        JournalStatus journal_status_;
     };
 }

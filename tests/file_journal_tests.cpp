@@ -99,7 +99,7 @@ namespace journal::tests
         const TempPath tmpPath{std::filesystem::temp_directory_path()};
         const FileJournal journal(tmpPath.path(), LogLevel::Info);
 
-        testContext.check(journal.is_open(), "FileJournal initialization test: Can not open file");
+        testContext.check(journal.is_ready(), "FileJournal initialization test: Can not open file");
         testContext.check(journal.status() == JournalStatus::Success, "FileJournal initialization test: journal.status() != JournalStatus::Success after initialization");
     }
 
@@ -108,9 +108,9 @@ namespace journal::tests
         const FileJournal journalEmptyPath("", LogLevel::Info);
         const FileJournal journalNonExistingPath("non/existing/path.log", LogLevel::Info);
 
-        testContext.check(!journalEmptyPath.is_open(), "FileJournal invalid path test: FileJournal opened file with empty path");
+        testContext.check(!journalEmptyPath.is_ready(), "FileJournal invalid path test: FileJournal opened file with empty path");
         testContext.check(journalEmptyPath.status() == JournalStatus::InvalidArgument, "FileJournal invalid path test: journal.status() != JournalStatus::InvalidArgument for empty path");
-        testContext.check(!journalNonExistingPath.is_open(), "FileJournal invalid path test: FileJournal opened non existing file");
+        testContext.check(!journalNonExistingPath.is_ready(), "FileJournal invalid path test: FileJournal opened non existing file");
         testContext.check(journalNonExistingPath.status() == JournalStatus::FileOpenFailed, "FileJournal invalid path test: journal.status() != JournalStatus::FileOpenFailed for non existsing path");
     }
 
