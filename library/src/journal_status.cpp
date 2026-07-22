@@ -2,7 +2,7 @@
 
 namespace journal
 {
-    std::string_view to_string(JournalStatus status) noexcept
+    std::string_view to_string(const JournalStatus status) noexcept
     {
         switch (status)
         {

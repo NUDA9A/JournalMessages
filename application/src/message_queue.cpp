@@ -4,7 +4,7 @@
 
 namespace application
 {
-    bool MessageQueue::push(PendingMessage&& message)
+    bool MessageQueue::push(JournalCommand&& message)
     {
         {
             std::unique_lock<std::mutex> lock(mutex_);
@@ -20,7 +20,7 @@ namespace application
         return true;
     }
 
-    std::optional<PendingMessage> MessageQueue::wait_and_pop()
+    std::optional<JournalCommand> MessageQueue::wait_and_pop()
     {
         std::unique_lock<std::mutex> lock(mutex_);
         cv_.wait(lock, [&]() { return stopped_ || !queue_.empty(); });

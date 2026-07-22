@@ -1,6 +1,6 @@
 #pragma once
 
-#include <application/pending_message.hpp>
+#include <application/journal_command.hpp>
 
 #include <optional>
 #include <deque>
@@ -21,11 +21,11 @@ namespace application
 
         ~MessageQueue() = default;
 
-        bool push(PendingMessage&& message);
-        std::optional<PendingMessage> wait_and_pop();
+        bool push(JournalCommand&& message);
+        std::optional<JournalCommand> wait_and_pop();
         void stop() noexcept;
     private:
-        std::deque<PendingMessage> queue_;
+        std::deque<JournalCommand> queue_;
         std::mutex mutex_;
         std::condition_variable cv_;
         bool stopped_{false};
