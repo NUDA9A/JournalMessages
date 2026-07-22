@@ -11,7 +11,12 @@ namespace journal
         InvalidArgument,
         FileOpenFailed,
         FileWriteFailed,
-        TimeConversionFailed
+        TimeConversionFailed,
+        MessageTooLarge,
+        SocketCreateFailed,
+        InvalidAddress,
+        ConnectionFailed,
+        SocketSendFailed
     };
 
     std::string_view to_string(JournalStatus status) noexcept;

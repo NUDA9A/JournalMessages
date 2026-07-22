@@ -18,6 +18,16 @@ namespace journal
             return "FILE_WRITE_FAILED";
         case JournalStatus::TimeConversionFailed:
             return "TIME_CONVERSION_FAILED";
+        case JournalStatus::MessageTooLarge:
+            return "MESSAGE_TOO_LARGE";
+        case JournalStatus::SocketCreateFailed:
+            return "SOCKET_CREATE_FAILED";
+        case JournalStatus::InvalidAddress:
+            return "INVALID_ADDRESS";
+        case JournalStatus::ConnectionFailed:
+            return "CONNECTION_FAILED";
+        case JournalStatus::SocketSendFailed:
+            return "SOCKET_SEND_FAILED";
         default:
             return "UNKNOWN_JOURNAL_STATUS";
         }

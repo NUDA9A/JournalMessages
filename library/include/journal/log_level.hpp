@@ -2,10 +2,11 @@
 
 #include <string_view>
 #include <optional>
+#include <cstdint>
 
 namespace journal
 {
-    enum class LogLevel
+    enum class LogLevel : std::uint8_t
     {
         Info,
         Warning,

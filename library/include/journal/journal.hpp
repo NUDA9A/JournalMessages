@@ -5,10 +5,6 @@
 #include <journal/log_record.hpp>
 
 #include <chrono>
-#include <ctime>
-#include <sstream>
-#include <iomanip>
-#include <string>
 #include <string_view>
 
 namespace journal
@@ -60,25 +56,6 @@ namespace journal
         virtual bool is_ready() const = 0;
 
     protected:
-        std::string form_log_message(const LogRecordView& logRecord)
-        {
-            const auto currentTime = std::chrono::system_clock::to_time_t(logRecord.timestamp);
-            const std::tm* currentDateTime = std::localtime(&currentTime);
-
-            if (currentDateTime == nullptr)
-            {
-                journal_status_ = JournalStatus::TimeConversionFailed;
-                return "";
-            }
-
-            std::ostringstream oss;
-
-            oss << std::put_time(currentDateTime, "[%Y-%m-%d %H:%M:%S]");
-            oss << " [" << to_string(logRecord.level) << "] " << logRecord.message << "\n";
-
-            return oss.str();
-        }
-
         explicit Journal(const LogLevel logLevel) : log_level_(logLevel), journal_status_(JournalStatus::Success) {}
 
         virtual JournalStatus transport(const LogRecordView& logRecord) = 0;
