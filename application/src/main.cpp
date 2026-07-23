@@ -1,7 +1,8 @@
 #include <application/message_queue.hpp>
 #include <journal/file_journal.hpp>
+#if (JOURNAL_ENABLE_SOCKET)
 #include <journal/socket_journal.hpp>
-
+#endif
 #include <iostream>
 #include <filesystem>
 #include <thread>
@@ -110,6 +111,7 @@ static void writingProc(journal::Journal* journalInstance, application::MessageQ
     }
 }
 
+#if (JOURNAL_ENABLE_SOCKET)
 static std::unique_ptr<journal::Journal> makeJournal(const std::string& address, const std::uint16_t port, const journal::LogLevel logLevel, const int argc)
 {
     if (argc == 3)
@@ -119,6 +121,12 @@ static std::unique_ptr<journal::Journal> makeJournal(const std::string& address,
 
     return std::make_unique<journal::SocketJournal>(address, port, logLevel);
 }
+#else
+static std::unique_ptr<journal::Journal> makeJournal(const std::string& address, const journal::LogLevel logLevel)
+{
+    return std::make_unique<journal::FileJournal>(std::filesystem::path(address), logLevel);
+}
+#endif
 
 template <typename T>
 std::optional<T> parseNumFromString(const char* str, std::size_t size, const std::string_view name)
@@ -137,14 +145,26 @@ std::optional<T> parseNumFromString(const char* str, std::size_t size, const std
 
 int main(const int argc, char* argv[])
 {
+    int errorCode = 1;
+#if (JOURNAL_ENABLE_SOCKET)
     if (argc != 3 && argc != 4)
     {
         std::cerr << "[ERROR]: Usage ./JournalMessages <path/to/log_file> <default_log_level> for FileJournal" << std::endl;
         std::cerr << "               ./JournalMessages <ip_address> <port> <default_log_level> for SocketJournal" << std::endl;
-        return 1;
+        return errorCode;
     }
+#else
+    if (argc != 3)
+    {
+        std::cerr << "[ERROR]: Usage ./JournalMessages <path/to/log_file> <default_log_level>" << std::endl;
+        return errorCode;
+    }
+#endif
+
+    errorCode++;
 
     const std::string address = argv[1];
+#if (JOURNAL_ENABLE_SOCKET)
     std::uint16_t port = 0;
 
     if (argc == 4)
@@ -152,25 +172,33 @@ int main(const int argc, char* argv[])
         const auto optPort = parseNumFromString<std::uint16_t>(argv[2], strlen(argv[2]), "port");
         if (!optPort || *optPort == 0)
         {
-            return 2;
+            return errorCode;
         }
         port = *optPort;
     }
+    errorCode++;
+#endif
 
     const auto default_log_level = journal::to_log_level(argc == 3 ? argv[2] : argv[3]);
     if (!default_log_level)
     {
         std::cerr << "[ERROR]: Invalid LogLevel value: " << (argc == 3 ? argv[2] : argv[3]) << "." << std::endl << "Valid values are: info, warning, error" << std::endl;
-        return 3;
+        return errorCode;
     }
-
+    errorCode++;
+#if (JOURNAL_ENABLE_SOCKET)
     const auto journalInstance = makeJournal(address, port, *default_log_level, argc);
+#else
+    const auto journalInstance = makeJournal(address, *default_log_level);
+#endif
+
 
     if (journalInstance->status() != journal::JournalStatus::Success)
     {
         std::cerr << "[ERROR]: Can not create journal: " << journal::to_string(journalInstance->status()) << std::endl;
-        return 4;
+        return errorCode;
     }
+    errorCode++;
 
     application::MessageQueue messageQueue;
     std::thread writingThread{[&]()
