@@ -10,7 +10,8 @@ namespace journal
     {
         Info,
         Warning,
-        Error
+        Error,
+        Size
     };
 
     std::string_view to_string(LogLevel level) noexcept;

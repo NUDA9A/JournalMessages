@@ -1,8 +1,16 @@
-//
-// Created by nuda9a on 7/23/26.
-//
+#pragma once
 
-#ifndef JOURNALMESSAGES_RECEIVED_LOG_RECORD_HPP
-#define JOURNALMESSAGES_RECEIVED_LOG_RECORD_HPP
+#include <journal/log_level.hpp>
 
-#endif //JOURNALMESSAGES_RECEIVED_LOG_RECORD_HPP
+#include <string>
+#include <chrono>
+
+namespace collector
+{
+    struct ReceivedLogRecord
+    {
+        std::string message;
+        journal::LogLevel level;
+        std::chrono::system_clock::time_point timestamp;
+    };
+}
