@@ -46,7 +46,7 @@ namespace collector
         case CollectorStatus::MessageTooLarge:
             return "MESSAGE_TOO_LARGE";
         default:
-            return "UNKNOWN_COLLECTOR_STATSUS";
+            return "UNKNOWN_COLLECTOR_STATUS";
         }
     }
 }
