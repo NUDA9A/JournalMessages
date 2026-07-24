@@ -31,7 +31,7 @@ namespace application
 
         auto res = std::move(queue_.front());
         queue_.pop_front();
-        return std::move(res);
+        return res;
     }
 
     void MessageQueue::stop() noexcept

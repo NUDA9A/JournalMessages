@@ -57,7 +57,7 @@ static void changeLogLevel(application::MessageQueue& messageQueue)
     while (true)
     {
         std::string logLevel;
-        std::cout << "Enter new LogLevel. Valid values are: info, warning, error.\n>> " << std::endl;
+        std::cout << "Enter new LogLevel. Valid values are: info, warning, error.\n>> ";
         getline(std::cin, logLevel);
         const auto userLogLevel = journal::to_log_level(logLevel);
         if (!userLogLevel)
