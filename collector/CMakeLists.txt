@@ -1,4 +1,6 @@
-add_executable(journal_collector src/main.cpp src/tcp_server.cpp)
+add_executable(journal_collector src/main.cpp src/tcp_server.cpp src/statistics.cpp)
+
+set_target_properties(journal_collector PROPERTIES OUTPUT_NAME "JournalCollector")
 
 target_include_directories(journal_collector PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>)
 

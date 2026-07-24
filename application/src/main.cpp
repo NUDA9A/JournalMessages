@@ -129,7 +129,7 @@ static std::unique_ptr<journal::Journal> makeJournal(const std::string& address,
 #endif
 
 template <typename T>
-std::optional<T> parseNumFromString(const char* str, std::size_t size, const std::string_view name)
+std::optional<T> parseNumFromString(const char* str, const std::size_t size, const std::string_view name)
 {
     T res{};
 
