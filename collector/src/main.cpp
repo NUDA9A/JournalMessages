@@ -6,7 +6,7 @@
 #include <string>
 #include <optional>
 #include <cstddef>
-#include <stdexcept>
+#include <system_error>
 #include <charconv>
 #include <cstdint>
 #include <cstring>
